@@ -50,7 +50,6 @@ public class AccountUtils {
         });
     }
 
-    // TODO: 16-4-8  modify the callback function according to the new API which can show the content of notifications
     public static void checkNotification(Context context, final MessageObserver observer){
         CookieUtils.saveCookie(client, context);
         RequestParams params = new RequestParams();
@@ -59,7 +58,6 @@ public class AccountUtils {
         client.get(context, CHECK_NOTIFICATION_URL, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.i("success", new String(responseBody));
                 String response = new String(responseBody);
                 try {
                     NotificationList notificationList = JSON.parseObject(response, NotificationList.class);
