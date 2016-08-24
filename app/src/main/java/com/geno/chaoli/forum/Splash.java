@@ -17,7 +17,6 @@ public class Splash extends Activity
 		super.onCreate(savedInstanceState);
 		//TODO Any splash screen here?
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		Toast.makeText(Splash.this, String.format(Locale.getDefault(), "%.2f%%", TODO.getStatus() * 100), Toast.LENGTH_SHORT).show();
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		Thread t = new Thread()
 		{

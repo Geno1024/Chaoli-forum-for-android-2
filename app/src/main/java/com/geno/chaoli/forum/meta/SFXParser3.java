@@ -9,8 +9,6 @@ import android.net.Uri;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.SpannedString;
-import android.text.TextPaint;
 import android.text.style.AlignmentSpan;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ClickableSpan;
@@ -19,7 +17,6 @@ import android.text.style.ImageSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
-import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.View;
@@ -39,9 +36,9 @@ public class SFXParser3
 
 	private static final String TAG = "SFXParser3";
 
-	public static final SpannableStringBuilder parse(final Context context, final TextView textView, String string)
+	public static final SpannableStringBuilder parse(final Context context, String string)
 	{
-		SpannableStringBuilder spannable = new SpannableStringBuilder(string);
+		final SpannableStringBuilder spannable = new SpannableStringBuilder(string);
 //		tagDealer(s, "[b]", "[/b]", new StyleSpan(Typeface.BOLD));
 //		tagDealer(s, "[i]", "[/i]", new StyleSpan(Typeface.ITALIC));
 
@@ -141,22 +138,22 @@ public class SFXParser3
 			h = Pattern.compile("(?<=\\[h\\])(.+?)(?=\\[/h\\])").matcher(spannable);
 		}
 
-		Matcher img = Pattern.compile("(?<=\\[img\\])(.+?)(?=\\[/img\\])").matcher(spannable);
-		while (img.find())
-		{
-			final int start = img.start(), end = img.end();
-			Log.d(TAG, "parse: " + start + ", " + end + ": " + spannable.subSequence(start, end).toString());
-			Glide.with(context).load(spannable.subSequence(start, end).toString()).asBitmap().into(new SimpleTarget<Bitmap>()
-			{
-				@Override
-				public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
-				{
-					spannable.setSpan(new ImageSpan(context, resource), start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-					Log.d(TAG, "onResourceReady: Inner: " + resource);
-					textview.setText(spannable);
-				}
-			});
-		}
+//		Matcher img = Pattern.compile("(?<=\\[img\\])(.+?)(?=\\[/img\\])").matcher(spannable);
+//		while (img.find())
+//		{
+//			final int start = img.start(), end = img.end();
+//			Log.d(TAG, "parse: " + start + ", " + end + ": " + spannable.subSequence(start, end).toString());
+//			Glide.with(context).load(spannable.subSequence(start, end).toString()).asBitmap().into(new SimpleTarget<Bitmap>()
+//			{
+//				@Override
+//				public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
+//				{
+//					spannable.setSpan(new ImageSpan(context, resource), start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+//					Log.d(TAG, "onResourceReady: Inner: " + resource);
+//					textview.setText(spannable);
+//				}
+//			});
+//		}
 
 		return spannable;
 	}

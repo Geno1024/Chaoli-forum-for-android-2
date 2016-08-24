@@ -3,6 +3,7 @@ package com.geno.chaoli.forum.meta;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
@@ -23,7 +24,7 @@ public class LaTeXtView extends TextView
 {
 	private String text;
 
-	private SpannableString span;
+	private SpannableStringBuilder span;
 
 	private View v;
 
@@ -54,10 +55,13 @@ public class LaTeXtView extends TextView
 	public void setText(final String text)
 	{
 		Log.d(TAG, "setText: " + text + " start.");
+//		SFXParser3.parse(getContext(), text);
 		v = View.inflate(getContext(), R.layout.latextview, null);
+//		this.text = text;
+//		span = new SpannableString(text);
 		this.text = text;
-		span = new SpannableString(text);
-		((TextView) findViewById(R.id.content)).setText(text);
+		span = SFXParser3.parse(getContext(), text);
+		((TextView) findViewById(R.id.content)).setText(span);
 		boolean flag = false;
 		Matcher m1 = PATTERN1.matcher(text);
 		while (m1.find())
@@ -92,6 +96,23 @@ public class LaTeXtView extends TextView
 				}
 			});
 		}
+
+		Matcher img = Pattern.compile("(?<=\\[img\\])(.+?)(?=\\[/img\\])").matcher(span);
+		while (img.find())
+		{
+			final int start = img.start(), end = img.end();
+			Log.d(TAG, "parse: " + start + ", " + end + ": " + span.subSequence(start, end).toString());
+			Glide.with(getContext()).load(span.subSequence(start, end).toString()).asBitmap().into(new SimpleTarget<Bitmap>()
+			{
+				@Override
+				public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation)
+				{
+					span.setSpan(new ImageSpan(getContext(), resource), start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+					Log.d(TAG, "onResourceReady: Inner: " + resource);
+					((TextView) findViewById(R.id.content)).setText(span);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -100,7 +121,7 @@ public class LaTeXtView extends TextView
 		return text;
 	}
 
-	public SpannableString getSpan()
+	public SpannableStringBuilder getSpan()
 	{
 		return span;
 	}
